@@ -19,7 +19,7 @@ class MazeGenerator {
         stack.push(new Node(0,0));
         while (!stack.empty()) {
             Node next = stack.pop();
-            if (maze[next.y][next.x] != 1 && legalMove(next)) {
+            if (validNextNode(next)) {
                 maze[next.y][next.x] = 1;
                 ArrayList<Node> neighbors = findNeighbors(next);
                 randomlyAddNodesToStack(neighbors);
@@ -27,7 +27,7 @@ class MazeGenerator {
         }
     }
 
-    public String rawMaze() {
+    public String getRawMaze() {
         StringBuilder sb = new StringBuilder();
         for (int[] row : maze) {
             sb.append(Arrays.toString(row) + "\n");
@@ -35,11 +35,11 @@ class MazeGenerator {
         return sb.toString();
     }
 
-    public String symbolicMaze() {
+    public String getSymbolicMaze() {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < dimension; i++) {
             for (int j = 0; j < dimension; j++) {
-                sb.append(maze[i][j] == 1 ? " " : "*");
+                sb.append(maze[i][j] == 1 ? "*" : " ");
                 sb.append("  "); 
             }
             sb.append("\n");
@@ -47,7 +47,7 @@ class MazeGenerator {
         return sb.toString();
     }
 
-    private boolean legalMove(Node node) {
+    private boolean validNextNode(Node node) {
         int numNeighboringOnes = 0;
         for (int y = node.y-1; y < node.y+2; y++) {
             for (int x = node.x-1; x < node.x+2; x++) {
@@ -56,7 +56,7 @@ class MazeGenerator {
                 }
             }
         }
-        return (numNeighboringOnes < 3);
+        return (numNeighboringOnes < 3) && maze[node.y][node.x] != 1;
     }
 
     private void randomlyAddNodesToStack(ArrayList<Node> nodes) {
